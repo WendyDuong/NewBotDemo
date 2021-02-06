@@ -17,7 +17,6 @@ intents:
 - control_group
 - ask_for_group
 entities:
-- student_group
 - user_choice
 - salary
 slots:
@@ -67,9 +66,6 @@ slots:
     influence_conversation: false
   requested_slot:
     type: unfeaturized
-    influence_conversation: false
-  student_group:
-    type: text
     influence_conversation: false
 responses:
   utter_greet:

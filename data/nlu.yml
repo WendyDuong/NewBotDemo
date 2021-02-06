@@ -3,23 +3,23 @@ version: "2.0"
 nlu:
 - intent: inform
   examples: |
-    - [46084](salary)
+    - [4608467](salary)
     - [89084](salary)
     - [56084](salary)
-    - [56](salary)
-    - [1](user_choice)
-    - [20](salary)
-    - [45](salary)
+    - [60000](salary)
+    - [10000](user_choice)
+    - [20000](salary)
+    - [45678](salary)
     - [853975927](salary)
     - [50000](salary)
-    - [7](salary)
+    - [76000](salary)
     - [99999](salary)
     - Meine Gehaltsvorstellung liegt bei [35000](salary)  brutto im Jahr
     - Meine Gehaltsvorstellung liegt bei einem Brutto-Jahresgehalt im Bereich von [40000](salary) Euro
     - Meine Gehaltsvorstellung liegt zwischen [45000](salary) Euro und 60.000 Euro brutto im Jahr
     - Ich empfinde ein Gehalt von [60000](salary) Euro als angemessen
     - ca. [77000](salary)
-    - Meine Gehalt ist ungefahr [6677](salary)
+    - Meine Gehalt ist ungefahr [66775](salary)
     - ungefahr [88999](salary)
     - [2](user_choice)
     - [1](user_choice)
@@ -31,7 +31,7 @@ nlu:
     - Die wichtigsten sind [2](user_choice)
     - Nummer [1](user_choice) passt mir am besten
     - Ich wähle [2](user_choice)
-    - [6](salary)
+    - [27000](salary)
     - [76767](salary)
     - [7457757](salary)
     - [600000](salary)
@@ -39,9 +39,6 @@ nlu:
     - [33333](salary)
     - [727272](salary)
     - [288282](salary)
-    - [2 3 4](user_choice)
-    - [3 4 5](user_choice)
-    - [2,3,4](user_choice)
     - Mein Wunsch ist [56000](salary)
     - [75575757](salary)
     - ca [584848894](salary)
@@ -66,6 +63,11 @@ nlu:
     - Ich habe meine Meinung geändert.
     - rftegeege
     - g
+    - h
+    - a
+    - r
+    - s
+    - p
     - rww
     - hahahah
     - oho
@@ -98,8 +100,6 @@ nlu:
     - guten Tag
 - intent: affirm
   examples: |
-    - j
-    - J
     - Yub
     - Jo
     - ja
@@ -115,7 +115,6 @@ nlu:
     - Das stimmt
 - intent: deny
   examples: |
-    - n
     - NEIN
     - Nein
     - nein
@@ -171,4 +170,5 @@ nlu:
 - regex: user_choice
   examples: |
     - \b[1-5]\b
+
 
