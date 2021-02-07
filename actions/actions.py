@@ -51,7 +51,7 @@ class ActionSubmit(Action):
 
     def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
         job_workplaces = tracker.get_slot("1_activity") + tracker.get_slot("2_outside") + tracker.get_slot(
-            "3_workingtime") + ("4_environment") + ("5_company")
+            "3_workingtime")
         job_softskills = tracker.get_slot("6_skills") + tracker.get_slot("7_personally") + tracker.get_slot(
             "8_problems_dealing") + tracker.get_slot("9_public")
 

@@ -171,4 +171,11 @@ nlu:
   examples: |
     - \b[1-5]\b
 
+#- regex: salary
+#  examples: |
+#    - \b[10000-99999999]\b
+
+- regex: salary
+  examples: |
+    - \b[0-9]{2,4}\b
 
