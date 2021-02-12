@@ -21,6 +21,7 @@ intents:
 entities:
 - user_choice
 - salary
+- out_of_range
 slots:
   10_min_salary:
     type: text
@@ -66,9 +67,7 @@ slots:
     type: text
     auto_fill: false
     influence_conversation: false
-  requested_slot:
-    type: unfeaturized
-    influence_conversation: false
+
 responses:
   utter_greet:
   - text: Liebe Studentinnen und Studenten, vielen Dank für die Benutzung unserer
@@ -100,6 +99,8 @@ responses:
       \ und Gehaltsvorstellung.\n Möchtest Du kurz die Umfragen teilnehmen?"
   utter_goodbye:
   - text: Auf Wiedersehen!
+  utter_number_out_of_range:
+  - text: Bitte gib eine gültige Nummer ein!
   utter_ask_1_activity:
   - text: "Wie schätzt Du folgenden Anforderungen mit Skala von 1 bis 5 ein?\n Abwechslungsreiche\
       \ Tätigkeit, Herausfordernde Tätigkeit, Aufstiegsmöglichkeiten, Weiterbildungsmöglichkeiten"
@@ -146,7 +147,7 @@ responses:
       \ und analytisches Denkenvermögen: {personally}\n - Problemlösungskompetenz,\
       \ Kritikfähigkeit, Stressresistenz: {problems_dealing}\n - Integrationsbereitschaft,\
       \ Präsentationsskills und Empathie: {public}\n *Gehalt:\n - geringes Jahresgehalt:\
-      \ {min_salary}\n - Wunschgehalt: {wish_salary}"
+      \ {min_salary}\n - Wunschgehalt: {wish_salary}\n\nHier ist die Jobsempfehlung:\n{result}"
   utter_ask_continue:
   - text: Entschuldigung! Ich habe dich nicht verstanden. Willst Du nochmal fortfahren?
 actions:

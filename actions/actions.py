@@ -7,21 +7,19 @@
 
 # This is a simple example for a custom action which utters "Hello World!"
 import csv
-# from database_connectivity import dataupdate
 from typing import Any, Text, Dict, List, Union
 from rasa_sdk import Action, Tracker
-# from rasa_sdk.events import EventType
+from rasa_sdk.events import EventType
 from rasa_sdk.events import SlotSet
 from rasa_sdk.executor import CollectingDispatcher
 from rasa_sdk.forms import FormAction, FormValidationAction
 import pandas as pd
 import numpy as np
+from pandas import Series
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from csv import writer
 
-
-# helper functions
 
 class FormInfo(Action):
 
@@ -50,13 +48,85 @@ class ActionSubmit(Action):
         return "action_submit"
 
     def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-        job_workplaces = tracker.get_slot("1_activity") + tracker.get_slot("2_outside") + tracker.get_slot(
-            "3_workingtime")
-        job_softskills = tracker.get_slot("6_skills") + tracker.get_slot("7_personally") + tracker.get_slot(
-            "8_problems_dealing") + tracker.get_slot("9_public")
+        global result
+        result = ""
 
-        # List of strings
-        # Append a list as new line to an old csv file
+        user_input = ""
+        if int(tracker.get_slot("1_activity")[0]) > 2:
+            user_input += "Abwechslungsreiche Tätigkeit Herausfordernde Tätigkeit Aufstiegsmöglichkeiten " \
+                          "Weiterbildungsmöglichkeiten" + " "
+        if int(tracker.get_slot("2_outside")[0]) > 2:
+            user_input += "Kundenkontakt Dienstreisen Gute Beziehung zu Vorgesetzten" + " "
+        if int(tracker.get_slot("3_workingtime")[0]) > 2:
+            user_input += "Flexible Arbeitszeit Überstundenkonto Arbeitszeiterfassung" + " "
+        if int(tracker.get_slot("4_environment")[0]) > 2:
+            user_input += "Lockere Arbeitsatmosphäre Anbindung an öffentliche Verkehrsmittel Kantine moderne Büro" + " "
+        if int(tracker.get_slot("5_company")[0]) > 2:
+            user_input += "Innovatives Unternehmen Etabliertes Unternehmen Start-up" + " "
+        if int(tracker.get_slot("6_skills")[0]) > 2:
+            user_input += "Kommunikationsfähigkeit Organisationsfähigkeit und Teamfähigkeit" + " "
+        if int(tracker.get_slot("7_personally")[0]) > 2:
+            user_input += "Lernbereitschaft Neugier Selbstdisziplin und analytisches Denkenvermögen" + " "
+        if int(tracker.get_slot("8_problems_dealing")[0]) > 2:
+            user_input += "Problemlösungskompetenz Kritikfähigkeit Stressresistenz" + " "
+        if int(tracker.get_slot("9_public")[0]) > 2:
+            user_input += "Integrationsbereitschaft Präsentationsskills und Empathie"
+
+        title = 'User'
+        # import input to csv file
+        fields = [11, 'User', 'field', user_input]
+        with open('test.csv', 'a') as f:
+            mwriter = csv.writer(f)
+            mwriter.writerow(fields)
+
+        # helper functions
+        def get_title_from_index(index):
+            return df[df.index == index]["title"].values[0]
+
+        def get_index_from_title(title):
+            return df[df.title == title]["index"].values[0]
+
+        ##################################################
+
+        # Step 1: Read CSV File
+        df = pd.read_csv("test.csv", encoding='unicode_escape')
+
+        # Step 2: Select Features
+        features = ['field', 'jobrequirements']
+
+        # Step 3: Create a column in Dataframe which combines all selected features
+        for feature in features:
+            df[feature] = df[feature].fillna('')  # fill NA/NaN values
+
+        def combine_features(row):
+            return row['field'] + " " + row['jobrequirements']
+
+        df["combined_features"] = df.apply(combine_features, axis=1)  # apply function along columns
+
+        # Step 4: Create count matrix from this new combined column
+        cv = CountVectorizer()
+        count_matrix = cv.fit_transform(df["combined_features"])  # transform array -> matrix
+
+        # Step 5: Compute the Cosine Similarity based on the count_matrix
+        cosine_sim = cosine_similarity(count_matrix)
+        indices = pd.Series(df.index)
+
+        # Step 6: Get index of the jobs from its title
+        job_index = get_index_from_title(title)
+
+        similar_jobs = list(enumerate(cosine_sim[job_index]))
+
+        # Step 7: Get a list of similar jobs in descending order of similarity score
+        sorted_similar_jobs = sorted(similar_jobs, key=lambda x: x[1], reverse=True)
+
+        # Step 8: Print titles of first similar 5 jobs
+        i = 0
+        for element in sorted_similar_jobs:
+            if 'User' not in get_title_from_index(element[0]):
+                result += get_title_from_index(element[0]) + "\n"
+            i = i + 1
+            if i > 5:
+                break
 
         dispatcher.utter_message(template="utter_slots_values", activity=tracker.get_slot("1_activity"),
                                  outside=tracker.get_slot("2_outside"), workingtime=tracker.get_slot("3_workingtime"),
@@ -66,5 +136,7 @@ class ActionSubmit(Action):
                                  problems_dealing=tracker.get_slot("8_problems_dealing"),
                                  public=tracker.get_slot("9_public"),
                                  min_salary=tracker.get_slot("10_min_salary"),
-                                 wish_salary=tracker.get_slot("11_wish_salary"))
+                                 wish_salary=tracker.get_slot("11_wish_salary"),
+                                 result=result)
+
         return []
