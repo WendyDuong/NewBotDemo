@@ -1,54 +1,235 @@
 version: "2.0"
-
+stories:
+- story: AGB deny
+  steps:
+  - intent: greet
+  - action: utter_greet
+  - intent: deny
+  - action: utter_goodbye
+- story: survey happy path
+  steps:
+  - intent: greet
+  - action: utter_greet
+  - intent: affirm
+  - action: utter_choose_group
+  - or:
+    - intent: mint_student
+    - intent: gender_female
+    - intent: first_generation
+    - intent: migration_background
+    - intent: control_group
+  - action: utter_ask_enroll_survey
+  - intent: active_form
+  - action: form_info
+  - active_loop: form_info
+  - active_loop: null
+  - action: action_submit
+  - or:
+    - intent: thankyou
+    - intent: affirm
+  - action: utter_goodbye
+- story: no survey
+  steps:
+  - intent: greet
+  - action: utter_greet
+  - intent: affirm
+  - action: utter_choose_group
+  - or:
+    - intent: mint_student
+    - intent: gender_female
+    - intent: first_generation
+    - intent: migration_background
+    - intent: control_group
+  - action: utter_ask_enroll_survey
+  - intent: deny
+  - action: utter_goodbye
 rules:
-
 - rule: Say goodbye anytime the user says goodbye
   steps:
   - intent: goodbye
   - action: utter_goodbye
-
 - rule: Active form
   steps:
   - intent: active_form
   - action: form_info
   - active_loop: form_info
-
-
-- rule: senerio of out of scope
+- rule: senerio of fallback
   condition:
-  # Condition that form is active.
+  - active_loop: form_info
+  steps:
+  - intent: nlu_fallback
+  - action: utter_ask_continue
+- rule: out of scope
+  condition:
   - active_loop: form_info
   steps:
   - intent: out_of_scope
   - action: utter_ask_continue
-
-- rule: senerio continue survey
+- rule: out of range 0
   condition:
-  # Condition that form is active.
+  - active_loop: form_info
+  steps:
+  - intent: inform
+    entities:
+    - out_of_range
+  - action: utter_number_out_of_range
+  - action: form_info
+  - active_loop: form_info
+- rule: continue survey
+  condition:
   - active_loop: form_info
   steps:
   - intent: affirm
   - action: form_info
   - active_loop: form_info
-
-- rule: senerio stop survey
+- rule: stop survey
   condition:
-  # Condition that form is active.
   - active_loop: form_info
   steps:
   - intent: deny
   - action: action_deactivate_loop
   - active_loop: null
   - action: utter_goodbye
-
-- rule: Submit form
+- rule: submit form
   condition:
   - active_loop: form_info
   steps:
   - action: form_info
   - active_loop: null
   - slot_was_set:
-      - requested_slot: null
+    - requested_slot: null
   - action: action_submit
   - intent: affirm
   - action: utter_goodbye
+- rule: senerio of out scope 1
+  condition:
+  - active_loop: form_info
+  - slot_was_set:
+    - requested_slot: 1_activity
+  steps:
+  - intent: inform
+    entities:
+    - salary
+  - action: utter_number_out_of_range
+  - action: form_info
+  - active_loop: form_info
+- rule: senerio of out scope 2
+  condition:
+  - active_loop: form_info
+  - slot_was_set:
+    - requested_slot: 2_outside
+  steps:
+  - intent: inform
+    entities:
+    - salary
+  - action: utter_number_out_of_range
+  - action: form_info
+  - active_loop: form_info
+- rule: senerio of out scope 3
+  condition:
+  - active_loop: form_info
+  - slot_was_set:
+    - requested_slot: 3_workingtime
+  steps:
+  - intent: inform
+    entities:
+    - salary
+  - action: utter_number_out_of_range
+  - action: form_info
+  - active_loop: form_info
+- rule: senerio of out scope 4
+  condition:
+  - active_loop: form_info
+  - slot_was_set:
+    - requested_slot: 4_environment
+  steps:
+  - intent: inform
+    entities:
+    - salary
+  - action: utter_number_out_of_range
+  - action: form_info
+  - active_loop: form_info
+- rule: senerio of out scope 5
+  condition:
+  - active_loop: form_info
+  - slot_was_set:
+    - requested_slot: 5_company
+  steps:
+  - intent: inform
+    entities:
+    - salary
+  - action: utter_number_out_of_range
+  - action: form_info
+  - active_loop: form_info
+- rule: senerio of out scope 6
+  condition:
+  - active_loop: form_info
+  - slot_was_set:
+    - requested_slot: 6_skills
+  steps:
+  - intent: inform
+    entities:
+    - salary
+  - action: utter_number_out_of_range
+  - action: form_info
+  - active_loop: form_info
+- rule: senerio of out scope 7
+  condition:
+  - active_loop: form_info
+  - slot_was_set:
+    - requested_slot: 7_personally
+  steps:
+  - intent: inform
+    entities:
+    - salary
+  - action: utter_number_out_of_range
+  - action: form_info
+  - active_loop: form_info
+- rule: senerio of out scope 8
+  condition:
+  - active_loop: form_info
+  - slot_was_set:
+    - requested_slot: 8_problems_dealing
+  steps:
+  - intent: inform
+    entities:
+    - salary
+  - action: utter_number_out_of_range
+  - action: form_info
+  - active_loop: form_info
+- rule: senerio of out scope 9
+  condition:
+  - active_loop: form_info
+  - slot_was_set:
+    - requested_slot: 9_public
+  steps:
+  - intent: inform
+    entities:
+    - salary
+  - action: utter_number_out_of_range
+  - action: form_info
+  - active_loop: form_info
+- rule: senerio of out scope 10
+  condition:
+  - active_loop: form_info
+  - slot_was_set:
+    - requested_slot: 10_min_salary
+  steps:
+  - intent: inform
+    entities:
+    - user_choice
+  - action: utter_number_out_of_range
+  - action: form_info
+  - active_loop: form_info
+- rule: senerio of out scope 11
+  condition:
+  - active_loop: form_info
+  - slot_was_set:
+    - requested_slot: 11_wish_salary
+  steps:
+  - intent: inform
+    entities:
+    - user_choice
+  - action: utter_number_out_of_range
+  - action: form_info
+  - active_loop: form_info
